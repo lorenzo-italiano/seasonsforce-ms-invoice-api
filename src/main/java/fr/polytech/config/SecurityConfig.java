@@ -17,6 +17,12 @@ public class SecurityConfig {
 
     private final JwtAuthConverter jwtAuthConverter = new JwtAuthConverter();
 
+    /**
+     * Configure the security filter chain to intercept all requests
+     * @param http HttpSecurity object to configure
+     * @return SecurityFilterChain to be used by Spring Security
+     * @throws Exception if an error occurs while configuring the HttpSecurity object
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

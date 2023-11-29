@@ -1,7 +1,7 @@
 package fr.polytech.service;
 
 import io.minio.*;
-import io.minio.errors.*;
+import io.minio.errors.MinioException;
 import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,9 @@ public class MinioService {
 
     private final Logger logger = LoggerFactory.getLogger(MinioService.class);
 
-    // Initialize minioClient with MinIO server.
+    /**
+     * Initialize minioClient with MinIO server.
+     */
     private final MinioClient minioClient = MinioClient.builder()
             .endpoint("http://invoice-minio:9000")
             .credentials("invoice", "invoiceinvoice")
@@ -36,10 +38,10 @@ public class MinioService {
      * Create a public bucket in Minio.
      *
      * @param bucketName: The name of the bucket.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     private void createPublicBucket(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 
@@ -72,10 +74,10 @@ public class MinioService {
      * Create a private bucket in Minio.
      *
      * @param bucketName: The name of the bucket.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     private void createPrivateBucket(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 
@@ -112,11 +114,11 @@ public class MinioService {
      * Create a bucket in Minio.
      *
      * @param bucketName: The name of the bucket.
-     * @param config: The configuration of the bucket.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @param config:     The configuration of the bucket.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     private void createBucket(String bucketName, String config) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
 
@@ -146,10 +148,10 @@ public class MinioService {
      *
      * @param bucketName: The name of the bucket.
      * @return True if the bucket exists, false otherwise.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     private boolean bucketExists(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
@@ -159,11 +161,11 @@ public class MinioService {
      * Create a bucket if it does not exist.
      *
      * @param bucketName: The name of the bucket.
-     * @param isPublic: True if the bucket should be public, false otherwise.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @param isPublic:   True if the bucket should be public, false otherwise.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     private void createBucketIfNotExists(String bucketName, boolean isPublic) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         if (!bucketExists(bucketName)) {
@@ -178,12 +180,12 @@ public class MinioService {
     /**
      * Upload a file to Minio.
      *
-     * @param bucketName: The name of the bucket.
-     * @param objectName: The name of the object.
+     * @param bucketName:    The name of the bucket.
+     * @param objectName:    The name of the object.
      * @param multipartFile: The file to upload.
-     * @throws IOException: If an I/O error occurs.
-     * @throws NoSuchAlgorithmException: If the algorithm SHA-256 is not available.
-     * @throws InvalidKeyException: If the key is invalid.
+     * @throws IOException              If an I/O error occurs.
+     * @throws NoSuchAlgorithmException If the algorithm SHA-256 is not available.
+     * @throws InvalidKeyException      If the key is invalid.
      */
     public void uploadFile(String bucketName, String objectName, MultipartFile multipartFile, boolean isPublicFile) throws IOException, NoSuchAlgorithmException, InvalidKeyException, MinioException {
         logger.info("Starting the upload of a file to Minio");
@@ -213,10 +215,10 @@ public class MinioService {
      *
      * @param bucketName: The name of the bucket.
      * @param objectName: The name of the object.
-     * @param file: The file to upload.
-     * @throws IOException: If an I/O error occurs.
-     * @throws NoSuchAlgorithmException: If the algorithm SHA-256 is not available.
-     * @throws InvalidKeyException: If the key is invalid.
+     * @param file:       The file to upload.
+     * @throws IOException              If an I/O error occurs.
+     * @throws NoSuchAlgorithmException If the algorithm SHA-256 is not available.
+     * @throws InvalidKeyException      If the key is invalid.
      */
     public void uploadFile(String bucketName, String objectName, File file, boolean isPublicFile) throws IOException, NoSuchAlgorithmException, InvalidKeyException, MinioException {
         logger.info("Starting the upload of a file to Minio");
@@ -276,10 +278,10 @@ public class MinioService {
      *
      * @param bucketName: The name of the bucket.
      * @param objectName: The name of the object.
-     * @throws MinioException if an error occurs.
-     * @throws IOException if an I/O error occurs.
+     * @throws MinioException           if an error occurs.
+     * @throws IOException              if an I/O error occurs.
      * @throws NoSuchAlgorithmException if an algorithm is not available.
-     * @throws InvalidKeyException if the key is invalid.
+     * @throws InvalidKeyException      if the key is invalid.
      */
     public void deleteFileFromPrivateBucket(String bucketName, String objectName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         minioClient.removeObject(
