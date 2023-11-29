@@ -16,7 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -35,16 +36,14 @@ public class InvoiceService {
 
     /**
      * Create a new invoice
+     *
      * @param invoice Invoice to create
      * @return Created invoice
-     * @throws IOException If an error occurs while creating the PDF
-     * @throws MinioException If an error occurs while uploading the PDF to Minio
-     * @throws NoSuchAlgorithmException If an error occurs while uploading the PDF to Minio
-     * @throws InvalidKeyException If an error occurs while uploading the PDF to Minio
-     * @throws RuntimeException If an error occurs while creating the invoice
-     * @throws NotFoundException If an error occurs while uploading the PDF to Minio
+     * @throws IOException              If an error occurs while creating the PDF
+     * @throws RuntimeException         If an error occurs while creating the invoice
+     * @throws NotFoundException        If an error occurs while uploading the PDF to Minio
      */
-    public Invoice createInvoice(InvoiceDataDTO invoice) {
+    public Invoice createInvoice(InvoiceDataDTO invoice) throws RuntimeException, NotFoundException, IOException {
 
         if (invoice.getCreationDate() == null) {
             invoice.setCreationDate(new java.sql.Date(System.currentTimeMillis()));
@@ -71,7 +70,6 @@ public class InvoiceService {
             logger.info("Creating content stream");
             // Initialise le contenu de la page
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
-//            contentStream.setFont(PDType1Font, 16);
             PDType1Font font = new PDType1Font(Standard14Fonts.FontName.COURIER);
             contentStream.setFont(font, 16);
             contentStream.beginText();
@@ -120,6 +118,7 @@ public class InvoiceService {
             System.out.println("Facture générée avec succès.");
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
 
         // TODO handle minio
@@ -132,11 +131,11 @@ public class InvoiceService {
      *
      * @param id: invoice id
      * @return invoice PDF URL
-     * @throws MinioException if an error occurs while getting the invoice URL
-     * @throws IOException if an error occurs while getting the invoice URL
+     * @throws MinioException           if an error occurs while getting the invoice URL
+     * @throws IOException              if an error occurs while getting the invoice URL
      * @throws NoSuchAlgorithmException if an error occurs while getting the invoice URL
-     * @throws InvalidKeyException if an error occurs while getting the invoice URL
-     * @throws NotFoundException if an error occurs while getting the invoice by id
+     * @throws InvalidKeyException      if an error occurs while getting the invoice URL
+     * @throws NotFoundException        if an error occurs while getting the invoice by id
      */
     public String getInvoiceUrl(UUID id) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException, NotFoundException {
         Invoice invoice = invoiceRepository.findById(id).orElse(null);
@@ -152,6 +151,7 @@ public class InvoiceService {
 
     /**
      * Get all invoices
+     *
      * @return List of all invoices
      */
     public List<Invoice> getAllInvoices() {
@@ -160,6 +160,7 @@ public class InvoiceService {
 
     /**
      * Get the invoice with the specified ID
+     *
      * @param id ID of the invoice to get
      * @return Invoice with the specified ID
      */
@@ -169,6 +170,7 @@ public class InvoiceService {
 
     /**
      * Delete the invoice with the specified ID
+     *
      * @param id ID of the invoice to delete
      */
     public void deleteInvoice(UUID id) {

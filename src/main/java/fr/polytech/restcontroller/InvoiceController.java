@@ -24,6 +24,12 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
+    /**
+     * Create a new invoice
+     *
+     * @param invoice Invoice to create
+     * @return Created invoice
+     */
     @PostMapping("/")
     @IsRecruiter
     @Consumes(MediaType.APPLICATION_JSON_VALUE)
@@ -36,6 +42,11 @@ public class InvoiceController {
         }
     }
 
+    /**
+     * Get all invoices
+     *
+     * @return List of all invoices
+     */
     @GetMapping("/")
     @IsAdmin
     @Produces(MediaType.APPLICATION_JSON_VALUE)
@@ -47,6 +58,12 @@ public class InvoiceController {
         }
     }
 
+    /**
+     * Get the invoice with the specified ID
+     *
+     * @param id ID of the invoice to get
+     * @return Invoice with the specified ID
+     */
     @GetMapping("/{id}")
     @IsRecruiterOrAdmin
     @Produces(MediaType.APPLICATION_JSON_VALUE)
@@ -58,6 +75,12 @@ public class InvoiceController {
         }
     }
 
+    /**
+     * Get the invoice URL with the specified ID
+     *
+     * @param id ID of the invoice to get
+     * @return Invoice URL with the specified ID or 404 if not found or 400 if error
+     */
     @GetMapping("/url/{id}")
     @IsRecruiterOrAdmin
     @Produces(MediaType.TEXT_PLAIN_VALUE)
@@ -71,6 +94,12 @@ public class InvoiceController {
         }
     }
 
+    /**
+     * Delete the invoice with the specified ID
+     *
+     * @param id ID of the invoice to delete
+     * @return 200 if the invoice has been deleted, 400 otherwise
+     */
     @DeleteMapping("/{id}")
     @IsRecruiterOrAdmin
     public ResponseEntity<Void> deleteInvoice(@PathVariable("id") UUID id) {
